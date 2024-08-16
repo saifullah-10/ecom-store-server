@@ -27,32 +27,36 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
-// const database = client.db("scic-product");
-// const products = database.collection("products");
+const database = client.db("scic-product");
+const products = database.collection("products");
 // const productsOne = database.collection("productsone");
 
 // Merge collections
 
 async function run() {
   try {
-    const products = client.db("scic-product").collection("products");
-    const productsOne = client.db("scic-product").collection("productsone");
+    // const products = client.db("scic-product").collection("products");
+    // const productsOne = client.db("scic-product").collection("productsone");
 
-    // Perform a union of the two collections
-    const allProducts = await products
-      .aggregate([
-        {
-          $unionWith: {
-            coll: "productsone",
-          },
-        },
-      ])
-      .toArray();
+    // const countProducts = await products.countDocuments();
+    // const countProductsOne = await productsOne.countDocuments();
+
+    // console.log(countProducts, countProductsOne);
+
+    // // Perform a union of the two collections
+    // const allProducts = await products
+    //   .aggregate([
+    //     {
+    //       $unionWith: {
+    //         coll: "productsone",
+    //       },
+    //     },
+    //   ])
+    //   .toArray();
 
     app.post("/products", async (req, res) => {
       try {
-        // const data = await allProducts.find().toArray();
-        console.log(allProducts);
+        const allProducts = await products.find().toArray();
         res.status(200).send(allProducts);
       } catch (err) {
         res.status(404).send(err.message);
