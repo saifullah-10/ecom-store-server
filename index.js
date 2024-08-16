@@ -8,7 +8,13 @@ require("dotenv").config();
 
 // middleware
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 // routes
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.kpsyb7k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -45,8 +51,9 @@ async function run() {
 
     app.post("/products", async (req, res) => {
       try {
-        const data = await allProducts.find().toArray();
-        res.status(200).send(data);
+        // const data = await allProducts.find().toArray();
+        console.log(allProducts);
+        res.status(200).send(allProducts);
       } catch (err) {
         res.status(404).send(err.message);
       }
