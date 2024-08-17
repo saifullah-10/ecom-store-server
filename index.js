@@ -13,6 +13,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://ecom-store-tau-seven.vercel.app",
+      "http://192.168.0.165:5173",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -46,6 +47,8 @@ async function run() {
       const categoryArr = category ? category.split(",") : [];
       const priceRange = parseInt(req.query.range) || null;
 
+      console.log(brand);
+
       let query = {};
 
       if (brandArr?.length > 0) {
@@ -58,7 +61,6 @@ async function run() {
       if (priceRange !== null) {
         query.price = { $gte: priceRange - 49, $lte: priceRange };
       }
-      console.log(search);
 
       if (search) {
         query.productName = { $regex: search, $options: "i" };
