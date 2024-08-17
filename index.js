@@ -40,6 +40,7 @@ async function run() {
       const price = req.query.price;
       const brand = req.query.brand;
       const category = req.query.category;
+      const search = req.query.search;
       const brandArr = brand ? brand.split(",") : [];
       const categoryArr = category ? category.split(",") : [];
       const priceRange = parseInt(req.query.range) || null;
@@ -56,7 +57,11 @@ async function run() {
       if (priceRange !== null) {
         query.price = { $gte: priceRange - 49, $lte: priceRange };
       }
-      console.log(query);
+      console.log(search);
+
+      if (search) {
+        query.productName = { $regex: search, $options: "i" };
+      }
       // sort by price
       let sortOption = {};
       if (price === "Low_To_High") {
