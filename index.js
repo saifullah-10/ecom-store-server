@@ -39,6 +39,7 @@ async function run() {
       const page = parseInt(req.query.page) || 1;
       const price = req.query.price;
       const brand = req.query.brand;
+      const newest = req.query.new;
       const category = req.query.category;
       const search = req.query.search;
       const brandArr = brand ? brand.split(",") : [];
@@ -68,6 +69,9 @@ async function run() {
         sortOption.price = 1;
       } else if (price === "High_To_Low") {
         sortOption.price = -1;
+      }
+      if (newest) {
+        sortOption.dateTime = -1;
       }
 
       const limit = 9;
