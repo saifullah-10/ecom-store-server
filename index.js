@@ -29,9 +29,6 @@ const client = new MongoClient(uri, {
 });
 const database = client.db("scic-product");
 const products = database.collection("products");
-// const productsOne = database.collection("productsone");
-
-// Merge collections
 
 async function run() {
   try {
