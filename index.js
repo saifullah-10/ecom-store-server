@@ -35,31 +35,51 @@ const products = database.collection("products");
 
 async function run() {
   try {
-    // const products = client.db("scic-product").collection("products");
-    // const productsOne = client.db("scic-product").collection("productsone");
+    app.get("/allProducts", async (req, res) => {
+      const page = parseInt(req.query.page) || 1;
+      const price = req.query.price;
+      const brand = req.query.brand;
+      const category = req.query.category;
+      const brandArr = brand ? brand.split(",") : [];
+      const categoryArr = category ? category.split(",") : [];
+      const priceRange = parseInt(req.query.range) || null;
 
-    // const countProducts = await products.countDocuments();
-    // const countProductsOne = await productsOne.countDocuments();
+      let query = {};
 
-    // console.log(countProducts, countProductsOne);
+      if (brand.length > 0) {
+        query.brandName = { $in: brandArr };
+      }
+      if (categoryArr.length > 0) {
+        query.category = { $in: categoryArr };
+      }
 
-    // // Perform a union of the two collections
-    // const allProducts = await products
-    //   .aggregate([
-    //     {
-    //       $unionWith: {
-    //         coll: "productsone",
-    //       },
-    //     },
-    //   ])
-    //   .toArray();
+      if (priceRange !== null) {
+        query.price = { $gte: priceRange - 49, $lte: priceRange };
+      }
+      console.log(query);
+      // sort by price
+      let sortOption = {};
+      if (price === "Low_To_High") {
+        sortOption.price = 1;
+      } else if (price === "High_To_Low") {
+        sortOption.price = -1;
+      }
 
-    app.post("/products", async (req, res) => {
+      const limit = 9;
+      const skip = (page - 1) * limit;
+
       try {
-        const allProducts = await products.find().toArray();
-        res.status(200).send(allProducts);
+        const count = await products.find(query).sort(sortOption).toArray();
+
+        const allProducts = await products
+          .find(query)
+          .sort(sortOption)
+          .skip(skip)
+          .limit(limit)
+          .toArray();
+        res.status(200).json({ allProducts, totalCount: count.length });
       } catch (err) {
-        res.status(404).send(err.message);
+        return res.status(500).send({ message: "Failed to fetch data" });
       }
     });
   } finally {
