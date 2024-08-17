@@ -45,10 +45,10 @@ async function run() {
 
       let query = {};
 
-      if (brand.length > 0) {
+      if (brandArr?.length > 0) {
         query.brandName = { $in: brandArr };
       }
-      if (categoryArr.length > 0) {
+      if (categoryArr?.length > 0) {
         query.category = { $in: categoryArr };
       }
 
